@@ -4,7 +4,7 @@ export default function Home() {
 
   return (
     <main>
-      <Link href='/dashboard'>Login</Link>
+      <Link href='sign-in'>Login</Link>
     </main>
   )
 }
