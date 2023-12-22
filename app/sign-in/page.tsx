@@ -18,6 +18,9 @@ export default function Page() {
     }
     try {
       const result = await signIn(params)
+      if (result) {
+        router.push('/home')
+      }
     } catch (error: any) {
       setHelperText(error.message)
     }
@@ -48,7 +51,7 @@ export default function Page() {
             />
             <Typography color='error' className='text-center'>{helperText}</Typography>
             <Button type='submit' fullWidth variant='contained' style={{textTransform: 'none'}}>Sign In</Button>
-            <Button fullWidth variant='outlined' className='mt-2' style={{textTransform: 'none'}} onClick={() => router.push('/sign-up')}>Sign Up</Button>
+            <Button fullWidth variant='outlined' style={{textTransform: 'none', marginTop: '10px'}} onClick={() => router.push('/sign-up')}>Sign Up</Button>
           </form>
         </Container>
       </main>

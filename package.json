@@ -12,12 +12,14 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^2.0.18",
-    "@mui/material": "^5.14.19",
+    "@mui/icons-material": "^5.15.1",
+    "@mui/material": "^5.15.1",
     "clsx": "^2.0.0",
     "http-proxy-middleware": "^2.0.6",
     "next": "14.0.2",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-pro-sidebar": "^1.1.0-alpha.1"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,7 +1,9 @@
 import {httpPost} from "@/utils/http";
 
-export const signIn = async (params: any) => {
-  const response = await httpPost('/api/user/auth/signIn', params)
-  console.log(response)
-  return response
+export const signIn = async (body: any) => {
+  return await httpPost('/api/user/auth/signIn', body)
+}
+
+export const signUp = async (body: any) => {
+  return await httpPost('/api/user/auth/signUp', body)
 }

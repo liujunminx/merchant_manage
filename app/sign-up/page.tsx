@@ -1,7 +1,8 @@
 'use client'
 import {Button, Container, FormHelperText, TextField, Typography} from "@mui/material";
 import React, {useState} from "react";
-import {signIn} from "@/service/user";
+import {signIn, signUp} from "@/service/user";
+import {useRouter} from "next/navigation";
 
 export default function Page() {
 
@@ -9,16 +10,23 @@ export default function Page() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const router = useRouter()
 
-  const signInSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const signUpSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (passwordError) {
+      return
+    }
     const data = new FormData(event.currentTarget)
     const params = {
       username: data.get('username'),
       password: data.get('password')
     }
     try {
-      const result = await signIn(params)
+      const response = await signUp(params)
+      if (response) {
+        router.push('/sign-in')
+      }
     } catch (error: any) {
       setHelperText(error.message)
     }
@@ -27,13 +35,25 @@ export default function Page() {
   const handleConfirmPasswordBlur = () => {
     if (confirmPassword !== password) {
       setPasswordError('The entered passwords are inconsistent')
+    } else {
+      setPasswordError('')
+    }
+  }
+
+  const handlePasswordBlur = () => {
+    if (confirmPassword) {
+      if (confirmPassword !== password) {
+        setPasswordError('The entered passwords are inconsistent')
+      } else {
+        setPasswordError('')
+      }
     }
   }
 
   return (
       <main>
         <Container maxWidth='xs' className='mt-24'>
-          <form onSubmit={signInSubmit}>
+          <form onSubmit={signUpSubmit}>
             <TextField
                 required
                 fullWidth
@@ -53,6 +73,7 @@ export default function Page() {
                 type='password'
                 defaultValue='Password'
                 onChange={e => setPassword(e.target.value)}
+                onBlur={handlePasswordBlur}
             />
             <TextField
               required
@@ -68,8 +89,7 @@ export default function Page() {
               helperText={passwordError}
               />
             <Typography color='error' className='text-center'>{helperText}</Typography>
-            <Button type='submit' fullWidth variant='contained' style={{textTransform: 'none'}}>Sign In</Button>
-            <Button fullWidth variant='outlined' className='mt-2' style={{textTransform: 'none'}}>Sign Up</Button>
+            <Button type='submit' fullWidth variant='contained' className='mt-2' style={{textTransform: 'none'}}>Sign Up</Button>
           </form>
         </Container>
       </main>

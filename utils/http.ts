@@ -7,11 +7,18 @@ type RequestOptions = {
 }
 
 const handleResponse = async (response: Response) => {
-  if (!response.ok){
-    const error = await response.text()
-    throw new Error(error || 'Client error')
+  const contentType = response.headers.get('Content-Type');
+  let result:any
+  if (contentType && contentType.includes('application/json')){
+    result = await response.json();
+  } else {
+    result = await response.text()
   }
-  return response.json()
+  console.log('result', result)
+  if (!response.ok) {
+    throw new Error(result.error || result)
+  }
+  return result
 }
 
 export const httpGet = async <T>(url: string): Promise<T> => {
