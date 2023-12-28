@@ -14,7 +14,6 @@ const handleResponse = async (response: Response) => {
   } else {
     result = await response.text()
   }
-  console.log('result', result)
   if (!response.ok) {
     throw new Error(result.error || result)
   }
