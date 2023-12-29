@@ -20,8 +20,8 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
         onChange={handleSearch}
         sx={{ borderRadius: "15px", height: "40px" }}
         placeholder="Search"
-        endAdornment={
-          <InputAdornment position="end">
+        startAdornment={
+          <InputAdornment position="start">
             <IconButton>
               <SearchIcon />
             </IconButton>
