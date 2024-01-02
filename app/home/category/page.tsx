@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import Search from "@/app/component/Search";
 import {FC, useEffect, useState} from "react";
-import {listCategoryTree} from "@/service/product";
+import {deleteCategory, listCategoryTree, saveCategory} from "@/service/product";
 import React from "react"
 import {Add, ChevronRight, Delete, Edit, ExpandMore, KeyboardArrowDown, KeyboardArrowRight} from "@mui/icons-material";
 import {NoneOutlinedIconButton} from "@/app/component/NoneOutlinedIconButton";
@@ -36,6 +36,7 @@ export default function Page() {
   const [categoryName, setCategoryName] = useState('')
   const [openSelectCategory, setOpenSelectCategory] = useState<boolean>(false)
   const [parentCategoryId, setParentCategoryId] = useState<number>(0)
+  const [parentCategoryName, setParentCategoryName] = useState("ROOT");
 
   useEffect(() => {
     getTreeData()
@@ -55,11 +56,6 @@ export default function Page() {
 
   const handleSearch = (searchText: string) => {
     console.log("Search Text: ", searchText)
-  }
-
-  const handleDoubleClick = (parentId: number) => {
-    setOpenSelectCategory(false)
-    setParentCategoryId(parentId)
   }
 
   const renderTree = (nodes: any) => (
@@ -84,7 +80,7 @@ export default function Page() {
           <TableCell>{node.status}</TableCell>
           <TableCell>
             <Button startIcon={<Edit />} variant="contained" sx={{borderRadius: "10px"}}>Edit</Button>
-            <NoneOutlinedIconButton>
+            <NoneOutlinedIconButton onClick={() => deleteOne(node.id)}>
               <Delete />
             </NoneOutlinedIconButton>
           </TableCell>
@@ -106,11 +102,40 @@ export default function Page() {
 
   const renderTreeView = (nodes: any) => (
     nodes.map((node: any) => (
-      <TreeItem onDoubleClick={() => handleDoubleClick(node.id)} key={node.id} nodeId={node.id} label={node.name}>
+      <TreeItem key={node.id} nodeId={node.id} label={node.name}>
         {Array.isArray(node.children) && node.children.length > 0 && renderTreeView(node.children)}
       </TreeItem>
     ))
   )
+
+  const handleSelectNode = (event: React.SyntheticEvent, nodeId: string) => {
+    setParentCategoryId(Number(nodeId))
+    setParentCategoryName(event.target.textContent)
+  }
+
+  const unSelectCategory = () => {
+    setParentCategoryId(0)
+    setOpenSelectCategory(false)
+  }
+
+  const confirmAdd = async () => {
+    const payload = {
+      parentId: parentCategoryId,
+      name: categoryName
+    }
+    const response = await saveCategory(payload)
+    if (response) {
+      await getTreeData()
+      setOpen(false)
+    }
+  }
+
+  const deleteOne = async (id: number) => {
+    const response = await deleteCategory(id)
+    if (response) {
+      await getTreeData()
+    }
+  }
 
   return (
       <main className="m-4">
@@ -149,9 +174,18 @@ export default function Page() {
                       InputProps={{
                         readOnly: true
                       }}
+                      value={parentCategoryName}
                       variant="outlined"
                     />
-                    <Button fullWidth size="medium" variant="outlined">Select Category</Button>
+                    <Button
+                      sx={{marginLeft: 2}}
+                      fullWidth
+                      size="small"
+                      onClick={() => setOpenSelectCategory(true)}
+                      variant="contained"
+                    >
+                      Select Category
+                    </Button>
                   </Box>
                 </FormControl>
                 <FormControl fullWidth>
@@ -164,7 +198,7 @@ export default function Page() {
                       fullWidth
                       size="small"
                       variant="outlined"
-                      onChange={(e:any) => setOpen(e.target.value)}
+                      onChange={(e:any) => setCategoryName(e.target.value)}
                     />
                   </div>
                 </FormControl>
@@ -172,25 +206,30 @@ export default function Page() {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button>Save</Button>
+              <Button onClick={() => confirmAdd()}>Save</Button>
             </DialogActions>
           </Dialog>
-          <Dialog open={openSelectCategory} onClose={() => setOpenSelectCategory(false)}>
+          <Dialog open={openSelectCategory} onClose={() => unSelectCategory()}>
             <DialogContent>
               <TreeView
                 defaultExpandIcon={<ChevronRight />}
                 defaultCollapseIcon={<ExpandMore />}
                 defaultExpanded={["0"]}
+                defaultSelected={"0"}
+                onNodeSelect={handleSelectNode}
               >
                 <TreeItem
                   nodeId="0"
                   label="ROOT"
-                  onDoubleClick={() => handleDoubleClick(0)}
                 >
                   {renderTreeView(treeData)}
                 </TreeItem>
               </TreeView>
             </DialogContent>
+            <DialogActions>
+              <Button onClick={() => unSelectCategory()}>Cancel</Button>
+              <Button onClick={() => setOpenSelectCategory(false)}>Save</Button>
+            </DialogActions>
           </Dialog>
         </ThemeProvider>
       </main>
