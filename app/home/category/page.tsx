@@ -32,11 +32,13 @@ export default function Page() {
 
   const [treeData, setTreeData] = useState([])
   const [expandedRows, setExpandedRows] = useState<{[key: number]: boolean}>({})
-  const [open, setOpen] = useState(false)
-  const [categoryName, setCategoryName] = useState('')
+  const [open, setOpen] = useState<boolean>(false)
+  const [openEdit, setOpenEdit] = useState<boolean>(false)
+  const [categoryName, setCategoryName] = useState<string>('')
   const [openSelectCategory, setOpenSelectCategory] = useState<boolean>(false)
   const [parentCategoryId, setParentCategoryId] = useState<number>(0)
-  const [parentCategoryName, setParentCategoryName] = useState("ROOT");
+  const [parentCategoryName, setParentCategoryName] = useState<string>("ROOT")
+  const [id, setId] = useState<any>('');
 
   useEffect(() => {
     getTreeData()
@@ -56,6 +58,18 @@ export default function Page() {
 
   const handleSearch = (searchText: string) => {
     console.log("Search Text: ", searchText)
+  }
+
+  const openEditDialog = (node: any) => {
+    setId(node.id)
+    setCategoryName(node.name)
+    setParentCategoryId(node.parentId)
+    const parentCategory: any = treeData.find((e:any) => e.id === node.parentId)
+    if (parentCategory) {
+      console.log('===')
+      setParentCategoryName(parentCategory.name)
+    }
+    setOpenEdit(true)
   }
 
   const renderTree = (nodes: any) => (
@@ -79,7 +93,7 @@ export default function Page() {
           </TableCell>
           <TableCell>{node.status}</TableCell>
           <TableCell>
-            <Button startIcon={<Edit />} variant="contained" sx={{borderRadius: "10px"}}>Edit</Button>
+            <Button startIcon={<Edit />} variant="contained" sx={{borderRadius: "10px"}} onClick={() => openEditDialog(node)}>Edit</Button>
             <NoneOutlinedIconButton onClick={() => deleteOne(node.id)}>
               <Delete />
             </NoneOutlinedIconButton>
@@ -114,7 +128,7 @@ export default function Page() {
   }
 
   const unSelectCategory = () => {
-    setParentCategoryId(0)
+    resetCategory()
     setOpenSelectCategory(false)
   }
 
@@ -127,7 +141,28 @@ export default function Page() {
     if (response) {
       await getTreeData()
       setOpen(false)
+      resetCategory()
     }
+  }
+
+  const confirmEdit = async () => {
+    const payload = {
+      parentId: parentCategoryId,
+      name: categoryName,
+      id,
+    }
+    const response = await saveCategory(payload)
+    if (response) {
+      await getTreeData()
+      setOpenEdit(false)
+      resetCategory()
+    }
+  }
+
+  const resetCategory = () => {
+    setId('')
+    setParentCategoryId(0)
+    setParentCategoryName("ROOT")
   }
 
   const deleteOne = async (id: number) => {
@@ -135,6 +170,16 @@ export default function Page() {
     if (response) {
       await getTreeData()
     }
+  }
+
+  const cancelAdd = () => {
+    setOpen(false)
+    resetCategory()
+  }
+
+  const cancelEdit = () => {
+    setOpenEdit(false)
+    resetCategory()
   }
 
   return (
@@ -158,7 +203,7 @@ export default function Page() {
               </TableBody>
             </Table>
           </div>
-          <Dialog open={open} onClose={() => setOpen(false)}>
+          <Dialog open={open} onClose={() => cancelAdd()}>
             <DialogTitle>Add Category</DialogTitle>
             <DialogContent>
               <form>
@@ -205,8 +250,8 @@ export default function Page() {
               </form>
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button onClick={() => confirmAdd()}>Save</Button>
+              <Button onClick={() => cancelAdd()}>Cancel</Button>
+              <Button onClick={() => confirmAdd()}>Confirm</Button>
             </DialogActions>
           </Dialog>
           <Dialog open={openSelectCategory} onClose={() => unSelectCategory()}>
@@ -214,8 +259,8 @@ export default function Page() {
               <TreeView
                 defaultExpandIcon={<ChevronRight />}
                 defaultCollapseIcon={<ExpandMore />}
-                defaultExpanded={["0"]}
-                defaultSelected={"0"}
+                defaultExpanded={[`${parentCategoryId}`]}
+                defaultSelected={`${parentCategoryId}`}
                 onNodeSelect={handleSelectNode}
               >
                 <TreeItem
@@ -229,6 +274,32 @@ export default function Page() {
             <DialogActions>
               <Button onClick={() => unSelectCategory()}>Cancel</Button>
               <Button onClick={() => setOpenSelectCategory(false)}>Save</Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={openEdit} onClose={() => cancelEdit()}>
+            <DialogTitle>Edit Category</DialogTitle>
+            <DialogContent>
+              <form>
+                <FormControl fullWidth>
+                  <div className="flex items-center">
+                    <label style={{minWidth: "150px", marginBottom: "5px"}}>Name:</label>
+                    <TextField
+                      autoFocus
+                      margin="normal"
+                      id="name"
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      value={categoryName}
+                      onChange={(e:any) => setCategoryName(e.target.value)}
+                    />
+                  </div>
+                </FormControl>
+              </form>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => cancelEdit()}>Cancel</Button>
+              <Button onClick={() => confirmEdit()}>Confirm</Button>
             </DialogActions>
           </Dialog>
         </ThemeProvider>
