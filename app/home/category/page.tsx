@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import Search from "@/app/component/Search";
 import {FC, useEffect, useState} from "react";
-import {deleteCategory, listCategoryTree, saveCategory} from "@/service/product";
+import {deleteCategory, listCategoryTree, saveCategory, searchTree} from "@/service/product";
 import React from "react"
 import {Add, ChevronRight, Delete, Edit, ExpandMore, KeyboardArrowDown, KeyboardArrowRight} from "@mui/icons-material";
 import {NoneOutlinedIconButton} from "@/app/component/NoneOutlinedIconButton";
@@ -56,8 +56,12 @@ export default function Page() {
     }))
   }
 
-  const handleSearch = (searchText: string) => {
+  const handleSearch = async (searchText: string) => {
     console.log("Search Text: ", searchText)
+    const data: any = await searchTree(searchText)
+    if (data) {
+      setTreeData(data)
+    }
   }
 
   const openEditDialog = (node: any) => {
@@ -72,24 +76,28 @@ export default function Page() {
     setOpenEdit(true)
   }
 
-  const renderTree = (nodes: any) => (
+  const renderTree = (nodes: any, offset: number) => (
     nodes.map((node: any) => (
       <React.Fragment key={node.id}>
         <TableRow>
-          <TableCell>
-            {Array.isArray(node.children) && node.children.length > 0 && (
-              <NoneOutlinedIconButton
-                aria-label="expand"
-                size="small"
-                onClick={() => toggleRow(node.id)}>
-                {expandedRows[node.id] ? (
-                  <KeyboardArrowDown />
-                ) : (
-                  <KeyboardArrowRight />
+          <TableCell sx={{paddingLeft: offset}}>
+            <Box display="flex" alignItems="center" justifyContent="flex-start">
+              <Box width="30px">
+                {Array.isArray(node.children) && node.children.length > 0 && (
+                  <NoneOutlinedIconButton
+                    aria-label="expand"
+                    size="small"
+                    onClick={() => toggleRow(node.id)}>
+                    {expandedRows[node.id] ? (
+                      <KeyboardArrowDown />
+                    ) : (
+                      <KeyboardArrowRight />
+                    )}
+                  </NoneOutlinedIconButton>
                 )}
-              </NoneOutlinedIconButton>
-            )}
-            {node.name}
+              </Box>
+              {node.name}
+            </Box>
           </TableCell>
           <TableCell>{node.status}</TableCell>
           <TableCell>
@@ -100,15 +108,7 @@ export default function Page() {
           </TableCell>
         </TableRow>
         {expandedRows[node.id] && Array.isArray(node.children) && node.children.length > 0 && (
-          <TableRow>
-            <TableCell colSpan={3}>
-              <Table>
-                <TableBody>
-                  {renderTree(node.children)}
-                </TableBody>
-              </Table>
-            </TableCell>
-          </TableRow>
+            renderTree(node.children, offset+2)
         )}
       </React.Fragment>
     ))
@@ -199,7 +199,7 @@ export default function Page() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {renderTree(treeData)}
+                {renderTree(treeData, 0)}
               </TableBody>
             </Table>
           </div>

@@ -11,3 +11,7 @@ export const saveCategory = async (payload: any) => {
 export const deleteCategory = async (id: number) => {
   return await httpDelete(`/api/product/category/${id}`)
 }
+
+export const searchTree = async (keyword: string) => {
+  return await httpGet(`/api/product/category/search?keyword=${keyword}`)
+}
