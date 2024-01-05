@@ -66,7 +66,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
             )}
           </Menu>
         </Sidebar>
-        <div className="flex flex-col">
+        <div style={{width: "100%", height: "100%", backgroundColor: "#f2f2f2"}}>
           <div>
             <Home fontSize="small"/>&#62;<span className="text-blue-500">{activeMenu}</span>
           </div>
