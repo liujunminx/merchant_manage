@@ -4,6 +4,7 @@ import {Box, Button, Container, OutlinedInput, TextField} from "@mui/material";
 import {Label} from "@mui/icons-material";
 import Image from "next/image";
 import {AddProductContainer, AddProductLabel, ProductTitleLabel} from "@/app/home/product/add/styles";
+import ProductImageUpload from "@/app/component/ProductImageUpload";
 
 export default function Page() {
 
@@ -11,7 +12,7 @@ export default function Page() {
     <main className="m-4">
       <ProductTitleLabel>Add Product</ProductTitleLabel>
       <Box display="flex">
-        <Container>
+        <Container sx={{width: "70%"}}>
           <AddProductContainer>
             <AddProductLabel>Basic Information</AddProductLabel>
             <TextField
@@ -48,10 +49,10 @@ export default function Page() {
             </Box>
           </AddProductContainer>
         </Container>
-        <Container>
+        <Container sx={{width: "30%"}}>
           <AddProductContainer>
             <AddProductLabel>Product Image</AddProductLabel>
-            <div>image</div>
+            <ProductImageUpload />
           </AddProductContainer>
           <AddProductContainer>
             <AddProductLabel>Visibility</AddProductLabel>
