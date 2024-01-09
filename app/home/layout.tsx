@@ -27,9 +27,9 @@ export default function Layout({children}: {children: React.ReactNode}) {
   }
 
   return (
-      <div className="flex h-screen">
+      <div style={{width: "100%", minHeight: "100vh", display: "flex"}}>
         <Sidebar
-          className="w-auto h-full"
+          style={{ minHeight: "100%"}}
           onChange={(e) => console.log("sidebar changed: ", e)}
           rootStyles={{
             [`.${sidebarClasses.container}`]: {
@@ -66,11 +66,11 @@ export default function Layout({children}: {children: React.ReactNode}) {
             )}
           </Menu>
         </Sidebar>
-        <div style={{width: "100%", height: "100%", backgroundColor: "#f2f2f2"}}>
+        <div style={{width: "calc(100% - 250px)", minHeight: "100%", backgroundColor: "#f2f2f2"}}>
           <div>
             <Home fontSize="small"/>&#62;<span className="text-blue-500">{activeMenu}</span>
           </div>
-          <div>
+          <div style={{width: "100%"}}>
             {children}
           </div>
         </div>

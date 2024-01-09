@@ -9,7 +9,7 @@ import ProductImageUpload from "@/app/component/ProductImageUpload";
 export default function Page() {
 
   return (
-    <main className="m-4">
+    <Box>
       <ProductTitleLabel>Add Product</ProductTitleLabel>
       <Box display="flex">
         <Container sx={{width: "70%"}}>
@@ -38,6 +38,7 @@ export default function Page() {
                 variant="outlined"
                 label="Stock"
                 fullWidth
+                margin="normal"
               />
               <TextField
                 sx={{marginLeft: 5}}
@@ -45,6 +46,7 @@ export default function Page() {
                 label="Price"
                 type="number"
                 fullWidth
+                margin="normal"
               />
             </Box>
           </AddProductContainer>
@@ -59,10 +61,21 @@ export default function Page() {
           </AddProductContainer>
         </Container>
       </Box>
-      <div>
-        <Button>Cancel</Button>
-        <Button variant="contained">Add Product</Button>
-      </div>
-    </main>
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        marginRight="20px"
+        position="fixed"
+        bottom="0"
+        style={{width: "calc(100% - 250px)"}}
+        padding="20px 0"
+        sx={{backgroundColor: "white"}}
+      >
+        <div style={{marginLeft: "auto", marginRight: "20px"}}>
+          <Button>Cancel</Button>
+          <Button variant="contained">Add Product</Button>
+        </div>
+      </Box>
+    </Box>
   )
 }
