@@ -1,81 +1,132 @@
 'use client'
 import {render} from "react-dom";
-import {Box, Button, Container, OutlinedInput, TextField} from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  FormLabel, Grid, InputLabel,
+  OutlinedInput,
+  Step,
+  StepLabel,
+  Stepper,
+  TextField
+} from "@mui/material";
 import {Label} from "@mui/icons-material";
 import Image from "next/image";
 import {AddProductContainer, AddProductLabel, ProductTitleLabel} from "@/app/home/product/add/styles";
 import ProductImageUpload from "@/app/component/ProductImageUpload";
+import {useState} from "react";
 
 export default function Page() {
 
+  const steps = ['Basic Info & Pricing', 'Inventory,Attributes & Images', 'Settings,Preview & Confirm']
+
+  const [activeStep, setActiveStep] = useState<number>(0)
+
   return (
-    <Box>
-      <ProductTitleLabel>Add Product</ProductTitleLabel>
-      <Box display="flex">
-        <Container sx={{width: "70%"}}>
-          <AddProductContainer>
-            <AddProductLabel>Basic Information</AddProductLabel>
-            <TextField
-              variant="outlined"
-              label="Product Name"
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              variant="outlined"
-              label="Description"
-              type="text"
-              margin="normal"
-              rows={4}
-              fullWidth
-              multiline
-            />
-          </AddProductContainer>
-          <AddProductContainer>
-            <AddProductLabel>Stock & Pricing</AddProductLabel>
-            <Box display="flex">
-              <TextField
-                variant="outlined"
-                label="Stock"
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                sx={{marginLeft: 5}}
-                variant="outlined"
-                label="Price"
-                type="number"
-                fullWidth
-                margin="normal"
-              />
-            </Box>
-          </AddProductContainer>
-        </Container>
-        <Container sx={{width: "30%"}}>
-          <AddProductContainer>
-            <AddProductLabel>Product Image</AddProductLabel>
-            <ProductImageUpload />
-          </AddProductContainer>
-          <AddProductContainer>
-            <AddProductLabel>Visibility</AddProductLabel>
-          </AddProductContainer>
-        </Container>
-      </Box>
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        marginRight="20px"
-        position="fixed"
-        bottom="0"
-        style={{width: "calc(100% - 250px)"}}
-        padding="20px 0"
-        sx={{backgroundColor: "white"}}
+    <Box
+      sx={{padding: 4}}
+    >
+      <Stepper
+        activeStep={activeStep}
       >
-        <div style={{marginLeft: "auto", marginRight: "20px"}}>
-          <Button>Cancel</Button>
-          <Button variant="contained">Add Product</Button>
-        </div>
-      </Box>
+        {steps.map((label, index) => (
+            <Step key={index}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          )
+        )}
+      </Stepper>
+      {activeStep===0 &&
+        <Box>
+          <form
+            style={{width: "60%", marginLeft: "120px"}}
+          >
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+            >
+              <Grid item xs={2}>
+                <InputLabel>Name:</InputLabel>
+              </Grid>
+              <Grid item>
+                <TextField
+                  name="name"
+                  variant="outlined"
+                  size="small"
+                  margin="normal"
+                />
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+              >
+              <Grid item xs={2}>
+                <InputLabel>Category:</InputLabel>
+              </Grid>
+              <Grid item>
+                <TextField
+                  name="category"
+                  variant="outlined"
+                  size="small"
+                  margin="normal"
+                  />
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+              >
+              <Grid item xs={2}>
+                <InputLabel>Brief:</InputLabel>
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  name="brief"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  margin="normal"
+                  />
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+            >
+              <Grid item xs={2}>
+                <InputLabel>Description:</InputLabel>
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  name="description"
+                  variant="outlined"
+                  size="small"
+                  type="text"
+                  multiline
+                  rows={3}
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+            </Grid>
+          </form>
+          <Container>
+            <Button
+              variant="contained"
+              onClick={() => setActiveStep(activeStep+1)}
+              >
+              Next
+            </Button>
+          </Container>
+        </Box>
+      }
     </Box>
   )
 }

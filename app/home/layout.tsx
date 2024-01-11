@@ -30,28 +30,8 @@ export default function Layout({children}: {children: React.ReactNode}) {
       <div style={{width: "100%", minHeight: "100vh", display: "flex"}}>
         <Sidebar
           style={{ minHeight: "100%"}}
-          onChange={(e) => console.log("sidebar changed: ", e)}
-          rootStyles={{
-            [`.${sidebarClasses.container}`]: {
-              background: "#252529"
-            },
-          }}>
-          <Menu
-            menuItemStyles={{
-            button: ({ level, active, disabled }) => {
-              // only apply styles on first level elements of the tree
-              if (level === 0)
-                return {
-                  color: disabled ? "#ffffff" : "#ffffff",
-                  backgroundColor: active ? "#007AFF" : undefined,
-                  "&:hover": {
-                    backgroundColor: "#000000 !important",
-                    color: "white !important",
-                  },
-                  margin: "5px 20px"
-                };
-            },
-          }}>
+          >
+          <Menu>
             {links.map((item:any, index: number) =>
               <MenuItem
                   key={index}
@@ -66,7 +46,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
             )}
           </Menu>
         </Sidebar>
-        <div style={{width: "calc(100% - 250px)", minHeight: "100%", backgroundColor: "#f2f2f2"}}>
+        <div style={{width: "calc(100% - 250px)", minHeight: "100%"}}>
           <div>
             <Home fontSize="small"/>&#62;<span className="text-blue-500">{activeMenu}</span>
           </div>
