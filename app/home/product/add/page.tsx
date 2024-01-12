@@ -19,7 +19,7 @@ export default function Page() {
 
   const steps = ['Basic Info & Pricing', 'Inventory,Attributes & Images', 'Settings,Preview & Confirm']
   const [activeStep, setActiveStep] = useState<number>(0)
-  const {control, handleSubmit} = useForm({
+  const {control, handleSubmit, formState: { errors }} = useForm({
     defaultValues: {
       id: null,
       name: "",
@@ -64,12 +64,15 @@ export default function Page() {
                 name="name"
                 control={control}
                 defaultValue=""
+                rules={{ required: "Name is required" }}
                 render={({ field }) => (
                   <TextField
                     {...field}
                     variant="outlined"
                     size="small"
                     margin="normal"
+                    error={Boolean(errors.name)}
+                    helperText={errors.name?.message}
                   />
                 )}
               />
@@ -318,7 +321,7 @@ export default function Page() {
           console.log("Success")
         }}
         onError={() => {
-          console.log("Error")
+          console.log("Error", errors)
         }}
       >
         {activeStep === 0 &&
