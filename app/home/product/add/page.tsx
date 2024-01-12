@@ -1,5 +1,4 @@
 'use client'
-import {render} from "react-dom";
 import {
   Box,
   Button,
@@ -12,17 +11,290 @@ import {
   Stepper,
   TextField
 } from "@mui/material";
-import {Label} from "@mui/icons-material";
-import Image from "next/image";
-import {AddProductContainer, AddProductLabel, ProductTitleLabel} from "@/app/home/product/add/styles";
-import ProductImageUpload from "@/app/component/ProductImageUpload";
-import {useState} from "react";
+import {useRef, useState} from "react";
+import {Controller, Form, SubmitHandler, useForm} from "react-hook-form";
+import Product from "@/app/home/product/add/consts";
 
 export default function Page() {
 
   const steps = ['Basic Info & Pricing', 'Inventory,Attributes & Images', 'Settings,Preview & Confirm']
-
   const [activeStep, setActiveStep] = useState<number>(0)
+  const {control, handleSubmit} = useForm({
+    defaultValues: {
+      id: null,
+      name: "",
+      description: "",
+      price: 0,
+      stock: 0,
+      categoryId: null
+    }
+  })
+
+  const handleNextStep = (step: number) => {
+    if (step === steps.length-1) {
+      handleSubmit(()=>{
+        console.log('step')
+      })()
+    } else {
+      setActiveStep(activeStep + 1)
+    }
+  }
+
+  const stepOne = () => {
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ width: "100%" }}
+      >
+        <Box
+          style={{width: "80%"}}
+        >
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Name:</InputLabel>
+            </Grid>
+            <Grid item>
+              <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="outlined"
+                    size="small"
+                    margin="normal"
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Category:</InputLabel>
+            </Grid>
+            <Grid item>
+              <TextField
+                name="category"
+                variant="outlined"
+                size="small"
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Brief:</InputLabel>
+            </Grid>
+            <Grid item xs={10}>
+              <TextField
+                name="brief"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Description:</InputLabel>
+            </Grid>
+            <Grid item xs={10}>
+              <TextField
+                name="description"
+                variant="outlined"
+                size="small"
+                type="text"
+                multiline
+                rows={3}
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+    )
+  }
+
+  const stepTwo = () => {
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ width: "100%" }}
+      >
+        <Box
+          style={{width: "80%"}}
+        >
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Stock:</InputLabel>
+            </Grid>
+            <Grid item>
+              <TextField
+                name="stock"
+                variant="outlined"
+                size="small"
+                margin="normal"
+                type="number"
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>price:</InputLabel>
+            </Grid>
+            <Grid item>
+              <TextField
+                name="price"
+                variant="outlined"
+                size="small"
+                type="number"
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Product Attributes:</InputLabel>
+            </Grid>
+            <Grid item xs={10}>
+              <TextField
+                name="productAttributes"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Product Specifications:</InputLabel>
+            </Grid>
+            <Grid item xs={10}>
+              <TextField
+                name="productSpecifications"
+                variant="outlined"
+                size="small"
+                type="text"
+                multiline
+                rows={3}
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+    )
+  }
+
+  const stepThree = () => {
+    return (
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ width: "100%" }}
+      >
+        <Box
+          style={{width: "80%"}}
+        >
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Shipping Cost:</InputLabel>
+            </Grid>
+            <Grid item>
+              <TextField
+                name="shippingCost"
+                variant="outlined"
+                size="small"
+                margin="normal"
+                type="number"
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Product Status:</InputLabel>
+            </Grid>
+            <Grid item>
+              <TextField
+                name="productStatus"
+                variant="outlined"
+                size="small"
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+          >
+            <Grid item xs={2}>
+              <InputLabel>Product Recommendations:</InputLabel>
+            </Grid>
+            <Grid item xs={10}>
+              <TextField
+                name="productRecommendations"
+                variant="outlined"
+                size="small"
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+    )
+  }
 
   return (
     <Box
@@ -38,95 +310,63 @@ export default function Page() {
           )
         )}
       </Stepper>
-      {activeStep===0 &&
-        <Box>
-          <form
-            style={{width: "60%", marginLeft: "120px"}}
-          >
-            <Grid
-              container
-              spacing={2}
-              alignItems="center"
+      <Form
+        action="/api"
+        method="post"
+        control={control}
+        onSuccess={() => {
+          console.log("Success")
+        }}
+        onError={() => {
+          console.log("Error")
+        }}
+      >
+        {activeStep === 0 &&
+          stepOne()
+        }
+        {activeStep === 1 &&
+          stepTwo()
+        }
+        {activeStep === 2 &&
+          stepThree()
+        }
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent={activeStep===0? "center": "space-between"}
+          sx={{ margin: "0 10%" }}
+        >
+          {activeStep !== 0 &&
+            <Button
+              variant="outlined"
+              onClick={() => setActiveStep(activeStep-1)}
             >
-              <Grid item xs={2}>
-                <InputLabel>Name:</InputLabel>
-              </Grid>
-              <Grid item>
-                <TextField
-                  name="name"
-                  variant="outlined"
-                  size="small"
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-            <Grid
-              container
-              spacing={2}
-              alignItems="center"
-              >
-              <Grid item xs={2}>
-                <InputLabel>Category:</InputLabel>
-              </Grid>
-              <Grid item>
-                <TextField
-                  name="category"
-                  variant="outlined"
-                  size="small"
-                  margin="normal"
-                  />
-              </Grid>
-            </Grid>
-            <Grid
-              container
-              spacing={2}
-              alignItems="center"
-              >
-              <Grid item xs={2}>
-                <InputLabel>Brief:</InputLabel>
-              </Grid>
-              <Grid item xs={8}>
-                <TextField
-                  name="brief"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  margin="normal"
-                  />
-              </Grid>
-            </Grid>
-            <Grid
-              container
-              spacing={2}
-              alignItems="center"
+              Back
+            </Button>
+          }
+          {activeStep === steps.length-1 &&
+            <Button
+              variant="outlined"
             >
-              <Grid item xs={2}>
-                <InputLabel>Description:</InputLabel>
-              </Grid>
-              <Grid item xs={8}>
-                <TextField
-                  name="description"
-                  variant="outlined"
-                  size="small"
-                  type="text"
-                  multiline
-                  rows={3}
-                  fullWidth
-                  margin="normal"
-                />
-              </Grid>
-            </Grid>
-          </form>
-          <Container>
+              Preview
+            </Button>
+          }
+          {activeStep === steps.length-1 ?
+            <Button
+              variant="contained"
+              type="submit"
+            >
+              Finish
+            </Button> :
             <Button
               variant="contained"
               onClick={() => setActiveStep(activeStep+1)}
-              >
+            >
               Next
             </Button>
-          </Container>
+          }
         </Box>
-      }
+      </Form>
     </Box>
   )
 }
