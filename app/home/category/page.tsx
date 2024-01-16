@@ -38,7 +38,7 @@ export default function Page() {
   const [openSelectCategory, setOpenSelectCategory] = useState<boolean>(false)
   const [parentCategoryId, setParentCategoryId] = useState<number>(0)
   const [parentCategoryName, setParentCategoryName] = useState<string>("ROOT")
-  const [id, setId] = useState<any>('');
+  const [id, setId] = useState<any>('')
 
   useEffect(() => {
     getTreeData()

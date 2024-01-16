@@ -4,21 +4,24 @@ import {
   Button,
   Container,
   FormControl,
-  FormLabel, Grid, InputLabel,
-  OutlinedInput,
+  FormLabel, Grid, InputLabel, MenuItem,
+  OutlinedInput, Select,
   Step,
   StepLabel,
   Stepper,
   TextField
 } from "@mui/material";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Controller, Form, SubmitHandler, useForm} from "react-hook-form";
 import Product from "@/app/home/product/add/consts";
+import {findAllLeafs} from "@/service/product";
+import * as wasi from "wasi";
 
 export default function Page() {
 
   const steps = ['Basic Info & Pricing', 'Inventory,Attributes & Images', 'Settings,Preview & Confirm']
   const [activeStep, setActiveStep] = useState<number>(0)
+  const [categoryLeafs, setCategoryLeafs] = useState<Array<any>>([]);
   const {control, handleSubmit, formState: { errors }} = useForm({
     defaultValues: {
       id: null,
@@ -30,6 +33,13 @@ export default function Page() {
     }
   })
 
+  useEffect(() => {
+    return () => {
+      getCategoryLeafs().then(r => {})
+    };
+  }, []);
+
+
   const handleNextStep = (step: number) => {
     if (step === steps.length-1) {
       handleSubmit(()=>{
@@ -37,6 +47,13 @@ export default function Page() {
       })()
     } else {
       setActiveStep(activeStep + 1)
+    }
+  }
+
+  const getCategoryLeafs = async () => {
+    const response: any = await findAllLeafs()
+    if (response) {
+      setCategoryLeafs(response)
     }
   }
 
@@ -86,12 +103,19 @@ export default function Page() {
             <Grid item xs={2}>
               <InputLabel>Category:</InputLabel>
             </Grid>
-            <Grid item>
-              <TextField
-                name="category"
-                variant="outlined"
-                size="small"
-                margin="normal"
+            <Grid item xs={4}>
+              <Controller
+                name="categoryId"
+                control={control}
+                rules={{ required: "Category is required" }}
+                render={({ field }) =>
+                  <Select
+                    {...field}
+                    fullWidth
+                  >
+                    {categoryLeafs.map((item, index) => <MenuItem value={item.id}>{item.name}</MenuItem>)}
+                  </Select>
+                }
               />
             </Grid>
           </Grid>
