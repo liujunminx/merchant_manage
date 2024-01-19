@@ -155,15 +155,22 @@ export default function Page() {
               <InputLabel>Description:</InputLabel>
             </Grid>
             <Grid item xs={10}>
-              <TextField
+              <Controller
+                control={control}
                 name="description"
-                variant="outlined"
-                size="small"
-                type="text"
-                multiline
-                rows={3}
-                fullWidth
-                margin="normal"
+                rules={{ required: "Description is required" }}
+                render={({ field }) =>
+                  <TextField
+                    {...field}
+                    variant="outlined"
+                    size="small"
+                    type="text"
+                    multiline
+                    rows={3}
+                    fullWidth
+                    margin="normal"
+                  />
+                }
               />
             </Grid>
           </Grid>
@@ -192,12 +199,19 @@ export default function Page() {
               <InputLabel>Stock:</InputLabel>
             </Grid>
             <Grid item>
-              <TextField
+              <Controller
                 name="stock"
-                variant="outlined"
-                size="small"
-                margin="normal"
-                type="number"
+                control={control}
+                rules={{ required: "Stock is required" }}
+                render={({field}) =>
+                  <TextField
+                    {...field}
+                    variant="outlined"
+                    size="small"
+                    margin="normal"
+                    type="number"
+                  />
+                }
               />
             </Grid>
           </Grid>
@@ -210,12 +224,19 @@ export default function Page() {
               <InputLabel>price:</InputLabel>
             </Grid>
             <Grid item>
-              <TextField
+              <Controller
                 name="price"
-                variant="outlined"
-                size="small"
-                type="number"
-                margin="normal"
+                control={control}
+                rules={{ required: "Price is required "}}
+                render={({ field }) =>
+                  <TextField
+                    {...field}
+                    variant="outlined"
+                    size="small"
+                    type="number"
+                    margin="normal"
+                  />
+                }
               />
             </Grid>
           </Grid>
