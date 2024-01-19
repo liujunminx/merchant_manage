@@ -3,7 +3,7 @@ import {
   Box,
   Button,
   Container,
-  FormControl,
+  FormControl, FormHelperText,
   FormLabel, Grid, InputLabel, MenuItem,
   OutlinedInput, Select,
   Step,
@@ -13,16 +13,14 @@ import {
 } from "@mui/material";
 import {useEffect, useRef, useState} from "react";
 import {Controller, Form, SubmitHandler, useForm} from "react-hook-form";
-import Product from "@/app/home/product/add/consts";
 import {findAllLeafs} from "@/service/product";
-import * as wasi from "wasi";
 
 export default function Page() {
 
   const steps = ['Basic Info & Pricing', 'Inventory,Attributes & Images', 'Settings,Preview & Confirm']
   const [activeStep, setActiveStep] = useState<number>(0)
   const [categoryLeafs, setCategoryLeafs] = useState<Array<any>>([]);
-  const {control, handleSubmit, formState: { errors }} = useForm({
+  const {control, handleSubmit, formState: {errors, isValid}, trigger} = useForm({
     defaultValues: {
       id: null,
       name: "",
@@ -30,7 +28,8 @@ export default function Page() {
       price: 0,
       stock: 0,
       categoryId: null
-    }
+    },
+    mode: "all"
   })
 
   useEffect(() => {
@@ -39,14 +38,19 @@ export default function Page() {
     };
   }, []);
 
-
-  const handleNextStep = (step: number) => {
-    if (step === steps.length-1) {
-      handleSubmit(()=>{
-        console.log('step')
-      })()
+  const onSubmit = async (data: any) => {
+    console.log(isValid)
+    if (isValid) {
+      console.log(data)
     } else {
-      setActiveStep(activeStep + 1)
+      console.log(errors)
+    }
+  }
+
+  const handleNextStep = async (step: number) => {
+    await trigger()
+    if (isValid) {
+      setActiveStep(step+1)
     }
   }
 
@@ -80,7 +84,6 @@ export default function Page() {
               <Controller
                 name="name"
                 control={control}
-                defaultValue=""
                 rules={{ required: "Name is required" }}
                 render={({ field }) => (
                   <TextField
@@ -88,7 +91,7 @@ export default function Page() {
                     variant="outlined"
                     size="small"
                     margin="normal"
-                    error={Boolean(errors.name)}
+                    error={!!errors.name}
                     helperText={errors.name?.message}
                   />
                 )}
@@ -109,14 +112,20 @@ export default function Page() {
                 control={control}
                 rules={{ required: "Category is required" }}
                 render={({ field }) =>
-                  <Select
+                  <TextField
+                    select
                     {...field}
                     fullWidth
+                    size="small"
+                    margin="normal"
+                    error={!!errors.categoryId}
+                    helperText={errors.categoryId?.message}
                   >
                     {categoryLeafs.map((item, index) => <MenuItem value={item.id}>{item.name}</MenuItem>)}
-                  </Select>
+                  </TextField>
                 }
               />
+
             </Grid>
           </Grid>
           <Grid
@@ -337,16 +346,8 @@ export default function Page() {
           )
         )}
       </Stepper>
-      <Form
-        action="/api"
-        method="post"
-        control={control}
-        onSuccess={() => {
-          console.log("Success")
-        }}
-        onError={() => {
-          console.log("Error", errors)
-        }}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
       >
         {activeStep === 0 &&
           stepOne()
@@ -387,13 +388,14 @@ export default function Page() {
             </Button> :
             <Button
               variant="contained"
-              onClick={() => setActiveStep(activeStep+1)}
+              // onClick={() => setActiveStep(activeStep+1)}
+              onClick={() => handleNextStep(activeStep)}
             >
               Next
             </Button>
           }
         </Box>
-      </Form>
+      </form>
     </Box>
   )
 }
