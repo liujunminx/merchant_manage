@@ -14,10 +14,13 @@ import {
 import {useEffect, useRef, useState} from "react";
 import {Controller, Form, SubmitHandler, useForm} from "react-hook-form";
 import {findAllLeafs} from "@/service/product";
+import {compileNonPath} from "next/dist/shared/lib/router/utils/prepare-destination";
+import {useRouter} from "next/navigation";
 
 export default function Page() {
 
   const steps = ['Basic Info & Pricing', 'Inventory,Attributes & Images', 'Settings,Preview & Confirm']
+  const router = useRouter()
   const [activeStep, setActiveStep] = useState<number>(0)
   const [categoryLeafs, setCategoryLeafs] = useState<Array<any>>([]);
   const {control, handleSubmit, formState: {errors, isValid}, trigger} = useForm({
@@ -27,8 +30,10 @@ export default function Page() {
       description: "",
       price: 0,
       stock: 0,
-      categoryId: null
+      categoryId: null,
+      status: ""
     },
+
     mode: "all"
   })
 
@@ -50,6 +55,7 @@ export default function Page() {
   const handleNextStep = async (step: number) => {
     await trigger()
     if (isValid) {
+      console.log('errors', errors)
       setActiveStep(step+1)
     }
   }
@@ -169,6 +175,8 @@ export default function Page() {
                     rows={3}
                     fullWidth
                     margin="normal"
+                    error={!!errors.description}
+                    helperText={errors.description?.message}
                   />
                 }
               />
@@ -202,7 +210,13 @@ export default function Page() {
               <Controller
                 name="stock"
                 control={control}
-                rules={{ required: "Stock is required" }}
+                rules={{
+                  required: "Stock is required",
+                  min: {
+                    value: 1,
+                    message: "Stock must be at least"
+                  }
+                }}
                 render={({field}) =>
                   <TextField
                     {...field}
@@ -210,6 +224,8 @@ export default function Page() {
                     size="small"
                     margin="normal"
                     type="number"
+                    error={!!errors.stock}
+                    helperText={errors.stock?.message}
                   />
                 }
               />
@@ -221,13 +237,19 @@ export default function Page() {
             alignItems="center"
           >
             <Grid item xs={2}>
-              <InputLabel>price:</InputLabel>
+              <InputLabel>Price:</InputLabel>
             </Grid>
             <Grid item>
               <Controller
                 name="price"
                 control={control}
-                rules={{ required: "Price is required "}}
+                rules={{
+                  required: "Price is required",
+                  min: {
+                    value: 1,
+                    message: "Price must be at least"
+                  }
+                }}
                 render={({ field }) =>
                   <TextField
                     {...field}
@@ -235,6 +257,8 @@ export default function Page() {
                     size="small"
                     type="number"
                     margin="normal"
+                    error={!!errors.price}
+                    helperText={errors.price?.message}
                   />
                 }
               />
@@ -322,11 +346,20 @@ export default function Page() {
               <InputLabel>Product Status:</InputLabel>
             </Grid>
             <Grid item>
-              <TextField
-                name="productStatus"
-                variant="outlined"
-                size="small"
-                margin="normal"
+              <Controller
+                name="status"
+                control={control}
+                rules={{ required: "Product Status is required" }}
+                render={({field}) =>
+                  <TextField
+                    {...field}
+                    variant="outlined"
+                    size="small"
+                    margin="normal"
+                    error={!!errors.status}
+                    helperText={errors.status?.message}
+                  />
+                }
               />
             </Grid>
           </Grid>
@@ -367,8 +400,20 @@ export default function Page() {
           )
         )}
       </Stepper>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
+      <Form
+        headers={{
+          'Content-Type': 'application/json',
+        }}
+        action="/api/product/save"
+        method="post"
+        control={control}
+        onSuccess={() => {
+          router.push("/home/product")
+        }}
+        onError={() => {
+          alert("Failed")
+        }}
+        validateStatus={(status) => status === 200}
       >
         {activeStep === 0 &&
           stepOne()
@@ -409,14 +454,13 @@ export default function Page() {
             </Button> :
             <Button
               variant="contained"
-              // onClick={() => setActiveStep(activeStep+1)}
               onClick={() => handleNextStep(activeStep)}
             >
               Next
             </Button>
           }
         </Box>
-      </form>
+      </Form>
     </Box>
   )
 }
