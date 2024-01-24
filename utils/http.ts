@@ -20,12 +20,14 @@ const handleResponse = async (response: Response) => {
   return result
 }
 
-export const httpGet = async <T>(url: string): Promise<T> => {
+export const httpGet = async <T>(path: string, data?: any): Promise<T> => {
+  const url = new URL(path, window.location.href)
+  url.search = new URLSearchParams(data).toString()
   const response = await fetch(url)
   return handleResponse(response)
 }
 
-export const httpPost = async <T>(url: string, data: any): Promise<T> => {
+export const httpPost = async <T>(path: string, data: any): Promise<T> => {
   const options: RequestOptions = {
     method: 'POST',
     headers: {
@@ -33,11 +35,11 @@ export const httpPost = async <T>(url: string, data: any): Promise<T> => {
     },
     body: JSON.stringify(data)
   }
-  const response = await fetch(url, options)
+  const response = await fetch(path, options)
   return handleResponse(response)
 }
 
-export const httpPut = async <T>(url: string, data: any): Promise<T> => {
+export const httpPut = async <T>(path: string, data: any): Promise<T> => {
   const options: RequestOptions = {
     method: 'PUT',
     headers: {
@@ -45,17 +47,17 @@ export const httpPut = async <T>(url: string, data: any): Promise<T> => {
     },
     body: JSON.stringify(data)
   }
-  const response = await fetch(url, options)
+  const response = await fetch(path, options)
   return handleResponse(response)
 }
 
-export const httpDelete = async <T>(url: string): Promise<T> => {
+export const httpDelete = async <T>(path: string): Promise<T> => {
   const options: RequestOptions = {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     },
   }
-  const response = await fetch(url, options)
+  const response = await fetch(path, options)
   return handleResponse(response)
 }

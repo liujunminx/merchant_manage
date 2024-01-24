@@ -2,15 +2,30 @@
 import Search from "@/app/component/Search";
 import {Button} from "@mui/material";
 import {Add} from "@mui/icons-material";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
+import {listProduct} from "@/service/product";
+import Product from "@/app/home/product/consts";
+import PageResponse from "@/app/consts/api";
 
 export default function Page() {
 
   const router = useRouter()
+  const [productData, setProductData] = useState<Array<Product>>([])
 
   const handleSearch = async (keyword: string) => {
 
+  }
+
+  useEffect( () => {
+    getProductData()
+  })
+
+  const getProductData = () => {
+    listProduct()
+      .then((response: PageResponse) => {
+        setProductData(response.content)
+      })
   }
 
   return (

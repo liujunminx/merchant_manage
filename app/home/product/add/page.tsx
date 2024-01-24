@@ -11,7 +11,7 @@ import {
   Stepper,
   TextField
 } from "@mui/material";
-import {useEffect, useRef, useState} from "react";
+import React, {FormEvent, useEffect, useRef, useState} from "react";
 import {Controller, Form, SubmitHandler, useForm} from "react-hook-form";
 import {findAllLeafs} from "@/service/product";
 import {compileNonPath} from "next/dist/shared/lib/router/utils/prepare-destination";
@@ -30,11 +30,11 @@ export default function Page() {
       description: "",
       price: 0,
       stock: 0,
-      categoryId: null,
+      categoryId: "",
       status: ""
     },
 
-    mode: "all"
+    mode: "onBlur"
   })
 
   useEffect(() => {
@@ -43,19 +43,10 @@ export default function Page() {
     };
   }, []);
 
-  const onSubmit = async (data: any) => {
-    console.log(isValid)
-    if (isValid) {
-      console.log(data)
-    } else {
-      console.log(errors)
-    }
-  }
-
-  const handleNextStep = async (step: number) => {
-    await trigger()
-    if (isValid) {
-      console.log('errors', errors)
+  const handleNextStep = async (e: React.MouseEvent<HTMLButtonElement>, step: number) => {
+    e.preventDefault()
+    const result = await trigger()
+    if (result) {
       setActiveStep(step+1)
     }
   }
@@ -127,7 +118,7 @@ export default function Page() {
                     error={!!errors.categoryId}
                     helperText={errors.categoryId?.message}
                   >
-                    {categoryLeafs.map((item, index) => <MenuItem value={item.id}>{item.name}</MenuItem>)}
+                    {categoryLeafs.map((item, index) => <MenuItem key={index} value={item.id}>{item.name}</MenuItem>)}
                   </TextField>
                 }
               />
@@ -349,7 +340,7 @@ export default function Page() {
               <Controller
                 name="status"
                 control={control}
-                rules={{ required: "Product Status is required" }}
+                rules={{required: "Product Status is required"}}
                 render={({field}) =>
                   <TextField
                     {...field}
@@ -454,7 +445,7 @@ export default function Page() {
             </Button> :
             <Button
               variant="contained"
-              onClick={() => handleNextStep(activeStep)}
+              onClick={(e) => handleNextStep(e, activeStep)}
             >
               Next
             </Button>
