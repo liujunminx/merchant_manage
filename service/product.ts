@@ -1,6 +1,7 @@
 import {httpDelete, httpGet, httpPost} from "@/utils/http";
+import PageResponse from "@/app/consts/api";
 
-export const listCategoryTree = async () => {
+export const listCategoryTree = async (): Promise<Array<any>> => {
   return await httpGet("/api/product/category/listTree")
 }
 
@@ -20,6 +21,6 @@ export const findAllLeafs = async () => {
   return await httpGet("/api/product/category/findAllLeafs")
 }
 
-export const listProduct = async (): Promise<any> => {
+export const listProduct = async (): Promise<PageResponse> => {
   return await httpGet("/api/product/listPage")
 }

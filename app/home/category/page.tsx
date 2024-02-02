@@ -28,9 +28,10 @@ const theme = createTheme({
   }
 })
 
+
 export default function Page() {
 
-  const [treeData, setTreeData] = useState([])
+  const [treeData, setTreeData] = useState<any>([])
   const [expandedRows, setExpandedRows] = useState<{[key: number]: boolean}>({})
   const [open, setOpen] = useState<boolean>(false)
   const [openEdit, setOpenEdit] = useState<boolean>(false)
@@ -44,9 +45,10 @@ export default function Page() {
     getTreeData()
   }, [])
 
-  const getTreeData = async () => {
-    const data: any = await listCategoryTree()
-    setTreeData(data)
+  const getTreeData = () => {
+    listCategoryTree().then((result: Array<any>) => {
+      setTreeData(result)
+    })
   }
 
   const toggleRow = (id: number) => {
@@ -70,7 +72,6 @@ export default function Page() {
     setParentCategoryId(node.parentId)
     const parentCategory: any = treeData.find((e:any) => e.id === node.parentId)
     if (parentCategory) {
-      console.log('===')
       setParentCategoryName(parentCategory.name)
     }
     setOpenEdit(true)
@@ -123,8 +124,9 @@ export default function Page() {
   )
 
   const handleSelectNode = (event: React.SyntheticEvent, nodeId: string) => {
-    setParentCategoryId(Number(nodeId))
-    setParentCategoryName(event.target.textContent)
+    const target = event.target as HTMLElement;
+    setParentCategoryId(Number(nodeId));
+    setParentCategoryName(target.textContent || "");
   }
 
   const unSelectCategory = () => {
