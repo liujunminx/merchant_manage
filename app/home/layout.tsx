@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import {Menu, menuClasses, MenuItem, Sidebar, sidebarClasses} from "react-pro-sidebar";
 import Link from "next/link";
 import {Category, Home, HomeMini, ProductionQuantityLimits} from "@mui/icons-material";
+import {Breadcrumbs, Typography} from "@mui/material";
 
 export default function Layout({children}: {children: React.ReactNode}) {
 
@@ -48,7 +49,10 @@ export default function Layout({children}: {children: React.ReactNode}) {
         </Sidebar>
         <div style={{width: "calc(100% - 250px)", minHeight: "100%"}}>
           <div>
-            <Home fontSize="small"/>&#62;<span className="text-blue-500">{activeMenu}</span>
+            <Breadcrumbs aria-label="breadcrumb">
+              <Link color="inherit" href="/home" >Home</Link>
+              <Typography color="text.primary">{activeMenu}</Typography>
+            </Breadcrumbs>
           </div>
           <div style={{width: "100%"}}>
             {children}
