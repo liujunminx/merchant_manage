@@ -1,3 +1,7 @@
+
+import Router from 'next/router'
+import {getCookies} from "undici-types";
+
 type RequestOptions = {
   method: string,
   headers: {
@@ -5,6 +9,7 @@ type RequestOptions = {
   },
   body?: string
 }
+
 
 const handleResponse = async (response: Response) => {
   const contentType = response.headers.get('Content-Type');

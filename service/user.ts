@@ -7,3 +7,7 @@ export const signIn = async (body: any) => {
 export const signUp = async (body: any) => {
   return await httpPost("/api/user/auth/signUp", body)
 }
+
+export const authenticate = async (body: any) => {
+  return await httpPost("/api/user/auth/authenticate", body)
+}

@@ -17,8 +17,8 @@ export default function Layout({children}: {children: React.ReactNode}) {
       icon: <Category />
     },
     {
-      name: "Product",
-      href: "/home/product",
+      name: "Good",
+      href: "/home/good",
       icon: <ProductionQuantityLimits />
     }
   ]

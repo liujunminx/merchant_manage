@@ -399,7 +399,7 @@ export default function Page() {
         method="post"
         control={control}
         onSuccess={() => {
-          router.push("/home/product")
+          router.push("/home/good")
         }}
         onError={() => {
           alert("Failed")

@@ -19,6 +19,7 @@ export default function Page() {
     try {
       const result = await signIn(params)
       if (result) {
+        localStorage.setItem("token", result.toString())
         router.push("/home")
       }
     } catch (error: any) {
