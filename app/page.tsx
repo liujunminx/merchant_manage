@@ -1,13 +1,9 @@
-import Link from "next/link";
 import ProtectedRoute from "@/app/protectedRoute";
 
-export default function Home() {
-
+export default function Page() {
   return (
     <main>
-      <ProtectedRoute>
-        <Link href="sign-in">Home</Link>
-      </ProtectedRoute>
+      <h1>Home</h1>
     </main>
   )
 }

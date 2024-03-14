@@ -38,7 +38,7 @@ export const httpPost = async <T>(path: string, data: any): Promise<T> => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: typeof data === 'string' ? data : JSON.stringify(data)
   }
   const response = await fetch(path, options)
   return handleResponse(response)

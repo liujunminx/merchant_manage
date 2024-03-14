@@ -1,4 +1,4 @@
-import {httpPost} from "@/utils/http";
+import {httpGet, httpPost} from "@/utils/http";
 
 export const signIn = async (body: any) => {
   return await httpPost("/api/user/auth/signIn", body)
