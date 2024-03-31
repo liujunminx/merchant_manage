@@ -2,7 +2,8 @@
 
 import React, {useEffect, useState} from 'react';
 import {authenticate} from "@/service/user";
-import {useRouter} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
+import SignInPage from './sign-in/page'
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,19 +18,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     console.log('token: ' + token)
     if (token) {
       authenticate(token).then((res: any) => {
-        if (!res)
-          router.push('/sign-in')
-        else
+        if (res)
           setAuthorized(true)
       }).catch((err: any) => {
-        router.push('/sign-in')
+        setAuthorized(false)
+      }).finally(() => {
+        if(!authorized) {
+          router.push('/sign-in')
+        }
       })
-    } else {
-      router.push('/sign-in')
     }
-  }, [])
+  }, [authorized, router])
 
-  return (authorized && children)
+  return (authorized?children:<SignInPage />)
 }
 
 export default ProtectedRoute

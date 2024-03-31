@@ -5,7 +5,7 @@ import {Add} from "@mui/icons-material";
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {listProduct} from "@/service/product";
-import {Product, ProductListCols} from "@/app/home/good/consts";
+import {Product, ProductListCols} from "@/app/good/consts";
 import PageResponse from "@/app/consts/api";
 import {DataGrid} from "@mui/x-data-grid";
 

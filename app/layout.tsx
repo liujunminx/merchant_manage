@@ -1,36 +1,66 @@
-'use client'
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import {createTheme, ThemeProvider} from "@mui/material";
-import React from "react";
+"use client"
+import React, {useState} from "react";
+import {Menu, menuClasses, MenuItem, Sidebar, sidebarClasses} from "react-pro-sidebar";
+import Link from "next/link";
+import {Category, Home, HomeMini, ProductionQuantityLimits} from "@mui/icons-material";
+import {Breadcrumbs, Typography} from "@mui/material";
 import ProtectedRoute from "@/app/protectedRoute";
 
-const inter = Inter({ subsets: ["latin"] })
+export default function Layout({children}: {children: React.ReactNode}) {
 
-const theme = createTheme({
-  typography: {
-    button: {
-      textTransform: "none"
+  const [activeMenu, setActiveMenu] = useState("")
+
+
+  const links = [
+    {
+      name: "Category",
+      href: "/category",
+      icon: <Category />
+    },
+    {
+      name: "Good",
+      href: "/good",
+      icon: <ProductionQuantityLimits />
     }
+  ]
+
+  const handleItemClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    setActiveMenu(event.currentTarget.id)
   }
-})
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
 
   return (
-    <html lang="en">
-      <ThemeProvider theme={theme}>
-        <body className={inter.className}>
-        {/* eslint-disable-next-line react/no-children-prop */}
-          <ProtectedRoute children={children}>
-
-          </ProtectedRoute>
-        </body>
-      </ThemeProvider>
-    </html>
+      <ProtectedRoute>
+        <div style={{width: "100%", minHeight: "100vh", display: "flex"}}>
+          <Sidebar
+              style={{ minHeight: "100%"}}
+          >
+            <Menu>
+              {links.map((item:any, index: number) =>
+                  <MenuItem
+                      key={index}
+                      id={item.name}
+                      active={item.name===activeMenu}
+                      icon={item.icon}
+                      onClick={handleItemClick}
+                      style={{borderRadius: "15px"}}
+                      component={<Link href={item.href} />}>
+                    {item.name}
+                  </MenuItem>
+              )}
+            </Menu>
+          </Sidebar>
+          <div style={{width: "calc(100% - 250px)", minHeight: "100%"}}>
+            <div>
+              <Breadcrumbs aria-label="breadcrumb">
+                <Link color="inherit" href="/" >Home</Link>
+                <Typography color="text.primary">{activeMenu}</Typography>
+              </Breadcrumbs>
+            </div>
+            <div style={{width: "100%"}}>
+              {children}
+            </div>
+          </div>
+        </div>
+      </ProtectedRoute>
   )
 }

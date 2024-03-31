@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import {signIn} from "@/service/user";
 import {useRouter} from "next/navigation";
 
-export default function Page() {
+export default function SignInPage() {
 
   const [helperText, setHelperText] = useState("")
   const router = useRouter()

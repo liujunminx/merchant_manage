@@ -205,6 +205,7 @@ export default function Page() {
               </TableBody>
             </Table>
           </div>
+
           <Dialog open={open} onClose={() => cancelAdd()}>
             <DialogTitle>Add Category</DialogTitle>
             <DialogContent>
@@ -256,6 +257,7 @@ export default function Page() {
               <Button onClick={() => confirmAdd()}>Confirm</Button>
             </DialogActions>
           </Dialog>
+
           <Dialog open={openSelectCategory} onClose={() => unSelectCategory()}>
             <DialogContent>
               <TreeView
@@ -278,6 +280,7 @@ export default function Page() {
               <Button onClick={() => setOpenSelectCategory(false)}>Save</Button>
             </DialogActions>
           </Dialog>
+
           <Dialog open={openEdit} onClose={() => cancelEdit()}>
             <DialogTitle>Edit Category</DialogTitle>
             <DialogContent>
